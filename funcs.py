@@ -1,9 +1,4 @@
 import mainfuncs
-
-
-'''the below functions are ways to shift the seats.'''
-
-
 def inst(l, index, steps):
     if steps>index:
         steps=index
@@ -22,10 +17,6 @@ def push(l, index, steps):
     for _ in range(steps):
         l.append(l.pop(0))
     return l
-    
-'''the below functions are used to shift seats in a given way.'''
-
-
 def left(l, num, steps, func):
     place_i, place_j=mainfuncs.find(l, num)
     l[place_i]=func(l[place_i], place_j, steps)
