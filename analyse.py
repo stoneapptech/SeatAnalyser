@@ -8,9 +8,7 @@ except:
 import mainfuncs
 import execute
 import numpy as np
-import matplotlib.pyplot as plt
 from copy import deepcopy as dp
-from mpl_toolkits.mplot3d import Axes3D
 import funcs
 from time import time
 from math import floor
@@ -37,14 +35,6 @@ for _ in range(times):
     poss_inst[place_i][place_j]+=1
     place_i, place_j=mainfuncs.find(push, number)
     poss_push[place_i][place_j]+=1
-fig=plt.figure()
-x=np.arange(6)
-y=np.arange(5,-1,-1)
-x, y=np.meshgrid(x, y)
-x, y=x.ravel(), y.ravel()
-width=depth=0.5
-bottom=np.zeros_like(x)
-axs=[]
 print('data generated this time:')
 for index, mode in enumerate(['rand', 'swap', 'push', 'inst']):
     try:
@@ -55,23 +45,6 @@ for index, mode in enumerate(['rand', 'swap', 'push', 'inst']):
     except:
         old=np.zeros(36, dtype=int)
     top=poss[index].ravel().astype(int)+old
-    if mode!='rand':
-        r=[]
-        perc=np.percentile(top, [25,50,85])
-        for i in top:
-            if i>=perc[2]:
-                r.append('#E50500')
-            elif i>=perc[1]:
-                r.append('#EA8800')
-            elif i>=perc[0]:
-                r.append('#50FA4D')
-            else:
-                r.append('#0400E6')
-    else:
-        r=None
-    axs.append(fig.add_subplot(220+index+1, projection='3d'))
-    axs[index].bar3d(x, y, bottom, width, depth, top, shade=True, color=r)
-    axs[index].set_title(mode)
     with open(str(number)+'_'+mode+'.txt', 'w') as file:
         print(mode+':', end='')
         for i in top:
@@ -80,4 +53,3 @@ for index, mode in enumerate(['rand', 'swap', 'push', 'inst']):
             file.write(' ')
         print()
 print('execution time:',floor(time()-now), 'secs')
-plt.show()
