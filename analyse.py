@@ -2,11 +2,12 @@ from sys import argv
 try:
     number,times=int(argv[1]),int(argv[2])
 except:
-    print("""Please input with the correct format:
-    python analyse.py [number to find] [times to analyse]""")
+    print("Please input with the correct format:\npython "+__file__+" [number to find] [times to analyse]")
     exit(1)
 import mainfuncs
 import execute
+from os.path import exists
+from os import chdir, mkdir
 import numpy as np
 from copy import deepcopy as dp
 import funcs
@@ -36,6 +37,9 @@ for _ in range(times):
     place_i, place_j=mainfuncs.find(push, number)
     poss_push[place_i][place_j]+=1
 print('data generated this time:')
+if not exists('data'):
+    mkdir('data')
+chdir('data')
 for index, mode in enumerate(['rand', 'swap', 'push', 'inst']):
     try:
         old=open(str(number)+'_'+mode+'.txt').read().split()
