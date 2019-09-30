@@ -1,5 +1,5 @@
 # SeatAnalyser
-An mini project that help deciding the best method to switch seats.
+An mini project that helps deciding the best method to switch seats.
 So yeah, here's a simple explanation of that.
 
 # Environment
