@@ -1,16 +1,37 @@
-import matplotlib.pyplot as plt
-import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 from sys import argv
 if len(argv)!=2:
     print("please run this program with the given format:\npython show.py [number to show]")
     exit(1)
+from os import chdir
+try:
+    chdir('data')
+except:
+    print("The data directory doesn't exist.")
+    exit(1)
+try:
+    open(argv[1]+"_rand.txt", 'r')
+except:
+    print("Failed to read data.")
+    exit(1)
+import matplotlib.pyplot as plt
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
 def read(filename):
     with open(filename) as f:
         s=f.readline().split()
     for index, i in enumerate(s):
         s[index]=int(i)
     return np.array(s)
+f=open('../requirements.txt', 'r')
+t=False
+for i in f.readlines():
+    if i.split()[0]==argv[1]:
+        print("requirement of",argv[1]+":\n"+i, end='')
+        t=True
+        break
+f.close()
+if not t:
+    print('the number', argv[1], "doesn't have any requirements.")
 fig=plt.figure()
 x=np.arange(6)
 y=np.arange(5,-1,-1)
