@@ -48,12 +48,14 @@ for index, mode in enumerate(['rand', 'swap', 'push', 'inst']):
         old=np.array(old)
     except:
         old=np.zeros(36, dtype=int)
-    top=poss[index].ravel().astype(int)+old
+    poss[index]=poss[index].ravel().astype(int)
+    print(mode+':', end='')
+    for i in poss[index]:
+        print(i, end=' ')
+    top=poss[index]+old
     with open(str(number)+'_'+mode+'.txt', 'w') as file:
-        print(mode+':', end='')
         for i in top:
-            print(i, end=' ')
             file.write(str(i))
             file.write(' ')
-        print()
+    print()
 print('execution time:',floor(time()-now), 'secs')
