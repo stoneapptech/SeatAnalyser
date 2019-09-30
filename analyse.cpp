@@ -2,7 +2,8 @@
 #include <fstream>
 #include <ctime>
 #include <string>
-using namespace std;
+#include <io.h>
+#include <direct.h>
 int _push[36];
 int _inst[36];
 int _swap[36];
@@ -13,10 +14,14 @@ int seat[36];
 int tmp[]= {-1,-1,-1,-1,-1,-1};
 int reqs[][3]={1,_f,100,3,b,2,5,_f,3,6,_f,1000,7,fr,8,8,br,6,10,fr,3,12,fl,250,13,fl,1000,14,br,1000,15,_l,100,17,_f,10,18,_f,100,20,_f,99,21,bl,3,22,b,3,23,b,2,24,b,100,25,bl,100,26,_f,100,27,fr,100,28,_f,7,30,b,6,31,_f,1000,32,fl,99,33,bl,2,34,_f,87,36,fr,11,37,_l,6};
 int order[sizeof(reqs)/sizeof(reqs[0])];
-string numbers="0123456789";
+std::string numbers="0123456789";
 #define renew(list) for(int i=0;i<sizeof(list)/sizeof(list[0]);i++)list[i]=-1
-string tos(int n){
-	string l;
+bool dirExists(std::string dirname){
+	if(_access(dirname.c_str(),0)==0)return true;
+    else return false;
+}
+std::string tos(int n){
+	std::string l;
     int power=1, r=0;;
     while(power<=n){
         power*=10;
@@ -51,7 +56,7 @@ int len(){
 	}
 	return 6;
 }
-int length(string s){
+int length(std::string s){
 	int i=0;
 	while(1){
 		if(s[i]=='\0')return i;
@@ -61,14 +66,14 @@ int length(string s){
 void PrintArr(int l[2]) {
 	for(int i=0;i<6;i++){
 		for(int j=0;j<6;j++){
-			if(l[i*6+j]<10) cout<<'0';
-			cout<<l[i*6+j]<<' ';
+			if(l[i*6+j]<10) std::cout<<'0';
+			std::cout<<l[i*6+j]<<' ';
 		}
-		cout<<endl;
+		std::cout<<std::endl;
 	}
 }
 int find_place[]= {-1,-1};
-void find(int *l,int number) {
+void arrayfind(int *l,int number) {
 	for(int i=0;i<=5;i++){
 		for(int j=0;j<=5;j++){
 			if (l[i*6+j]==number){
@@ -85,7 +90,7 @@ int poss_swap[36]={0};
 int poss_push[36]={0};
 void writefile(int mode, int toana){
 	int *poss;
-	string md;
+	std::string md;
 	switch(mode){
 		case mode_inst:
 		md="inst";
@@ -103,12 +108,12 @@ void writefile(int mode, int toana){
 		md="rand";
 		poss=poss_rand;
 	}
-	cout<<md<<':';
+	std::cout<<md<<':';
 	char t;
-    string number="";
+    std::string number="";
     int l[36]={0}, index=0;
-	fstream file;
-    file.open(tos(toana)+"_"+md+".txt", ios::in);
+	std::fstream file;
+    file.open(tos(toana)+"_"+md+".txt", std::ios::in);
 	if(file){
 		do{
 			file.get(t);
@@ -123,14 +128,14 @@ void writefile(int mode, int toana){
 		}while(index<36);
     	file.close();
 	}
-	string towrite;
+	std::string towrite;
 	for(int x=0;x<sizeof(poss_rand)/sizeof(poss_rand[0]);x++){
-		cout<<poss[x]<<' ';
+		std::cout<<poss[x]<<' ';
 		towrite+=tos(poss[x]+l[x]);
 		towrite+=' ';
 	}
-	cout<<endl;
-	file.open(tos(toana)+"_"+md+".txt", ios::out);
+	std::cout<<std::endl;
+	file.open(tos(toana)+"_"+md+".txt", std::ios::out);
 	file.write(towrite.c_str(),length(towrite));
 	file.close();
 }
@@ -160,7 +165,7 @@ void swap(int index, int steps){
 	tmp[index+steps]=t;
 }
 void right(int *l,int number,int steps,int method) {
-	find(l,number);
+	arrayfind(l,number);
 	for(int index=0;index<=5;index++)tmp[index]=l[find_place[0]*6+index];
 	switch(method){
 		case mode_inst:
@@ -176,8 +181,8 @@ void right(int *l,int number,int steps,int method) {
 	for(int j=0;j<=5;j++) l[find_place[0]*6+j]=tmp[j];
 	renew(tmp);
 }
-void left(int *l,int number,int steps,int method) {
-	find(l,number);
+void left(int *l,int number,int steps,int method){
+	arrayfind(l,number);
 	for(int index=0;index<6;index++){tmp[index]=l[(find_place[0]+1)*6-index-1];}
 	find_place[1]=5-find_place[1];
 	switch(method){
@@ -194,8 +199,8 @@ void left(int *l,int number,int steps,int method) {
 	for(int index=0;index<6;index++)l[find_place[0]*6+index]=tmp[len()-index-1];
 	renew(tmp);
 }
-void down(int *l,int number,int steps,int method) {
-	find(l,number);
+void down(int *l,int number,int steps,int method){
+	arrayfind(l,number);
 	for(int i=0;i<=5;i++)tmp[i]=l[i*6+find_place[1]];
 	switch(method){
 		case mode_swap:
@@ -212,7 +217,7 @@ void down(int *l,int number,int steps,int method) {
 	renew(tmp);
 }
 void up(int *l,int number,int steps,int method){
-	find(l,number);
+	arrayfind(l,number);
 	for(int i=0;i<6;i++)tmp[i]=l[(5-i)*6+find_place[1]];
 	find_place[0]=5-find_place[0];
 	switch(method){
@@ -229,8 +234,8 @@ void up(int *l,int number,int steps,int method){
 	for(int i=0;i<6;i++)l[(5-i)*6+find_place[1]]=tmp[i];
 	renew(tmp);
 }
-void downright(int *l,int number,int steps,int method) {
-	find(l,number);
+void downright(int *l,int number,int steps,int method){
+	arrayfind(l,number);
 	int times=0, index=0;
 	while(1){
 		if(find_place[0]*find_place[1]==0)break;
@@ -267,7 +272,7 @@ void downright(int *l,int number,int steps,int method) {
 	renew(tmp);
 }
 void upleft(int *l,int number,int steps,int method) {
-	find(l,number);
+	arrayfind(l,number);
 	int times=0, index=0;
 	while(1){
 		if(find_place[0]==5 or find_place[1]==5)break;
@@ -303,7 +308,7 @@ void upleft(int *l,int number,int steps,int method) {
 	renew(tmp);
 }
 void upright(int *l,int number,int steps,int method) {
-	find(l,number);
+	arrayfind(l,number);
 	int times=0,index=0;
 	while(1){
 		if(find_place[0]==5 or find_place[1]==0)break;
@@ -339,7 +344,7 @@ void upright(int *l,int number,int steps,int method) {
 	renew(tmp);
 }
 void downleft(int *l,int number,int steps,int method) {
-	find(l,number);
+	arrayfind(l,number);
 	int times=0, index=0;
 	while(1){
 		if(find_place[0]==0 or find_place[1]==5)break;
@@ -376,7 +381,7 @@ void downleft(int *l,int number,int steps,int method) {
 }
 //29=len(reqs)
 
-string err_msg="please run this program with the given format:\n.\\analyse.exe [number to find] [times to analyse]";
+
 int main(int argc, char *argv[]){
 	for(int i=1, j=0;j<36;i++){
         if(i==4)continue;
@@ -393,7 +398,8 @@ int main(int argc, char *argv[]){
 	}
 	else ext=1;
 	if(ext){
-		cout<<err_msg<<endl;
+		std::cout<<"please run this program with the given format:"<<std::endl;
+		std::cout<<argv[0]<<" [number to find] [times to analyse]"<<std::endl;
 		exit(1);
 	}
 	for(int i=0;i<29;i++)order[i]=i;
@@ -450,17 +456,20 @@ int main(int argc, char *argv[]){
 				break;
 			}
 		}
-		find(_inst, toana);
+		arrayfind(_inst, toana);
 		poss_inst[find_place[0]*6+find_place[1]]++;
-		find(_swap, toana);
+		arrayfind(_swap, toana);
 		poss_swap[find_place[0]*6+find_place[1]]++;
-		find(_push, toana);
+		arrayfind(_push, toana);
 		poss_push[find_place[0]*6+find_place[1]]++;
-		find(seat, toana);
+		arrayfind(seat, toana);
 		poss_rand[find_place[0]*6+find_place[1]]++;
 	}
-	cout<<"data generated this time:"<<endl;
+	std::cout<<"data generated this time:"<<std::endl;
+	std::string filname="data";
+	if(!dirExists(filname))mkdir(filname.c_str());
+	chdir(filname.c_str());
 	for(int mode=0;mode<=mode_count;mode++)writefile(mode, toana);
-	cout<<"execution time:"<<time(NULL)-start<<"secs"<<endl;
+	std::cout<<"execution time:"<<time(NULL)-start<<"secs"<<std::endl;
 	return 0;
 }
