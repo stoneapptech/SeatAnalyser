@@ -1,9 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
-#include <string>
-#include <io.h>
 #include <direct.h>
+#include <vector>
 int _push[36];
 int _inst[36];
 int _swap[36];
@@ -12,8 +11,6 @@ const int mode_count=3;
 const int _f=1,b=2,r=3,_l=4,bl=5,br=6,fl=7,fr=8;
 int seat[36];
 int tmp[]= {-1,-1,-1,-1,-1,-1};
-int reqs[][3]={1,_f,100,3,b,2,5,_f,3,6,_f,1000,7,fr,8,8,br,6,10,fr,3,12,fl,250,13,fl,1000,14,br,1000,15,_l,100,17,_f,10,18,_f,100,20,_f,99,21,bl,3,22,b,3,23,b,2,24,b,100,25,bl,100,26,_f,100,27,fr,100,28,_f,7,30,b,6,31,_f,1000,32,fl,99,33,bl,2,34,_f,87,36,fr,11,37,_l,6};
-int order[sizeof(reqs)/sizeof(reqs[0])];
 std::string numbers="0123456789";
 #define renew(list) for(int i=0;i<sizeof(list)/sizeof(list[0]);i++)list[i]=-1
 bool dirExists(std::string dirname){
@@ -379,10 +376,52 @@ void downleft(int *l,int number,int steps,int method) {
 	}
 	renew(tmp);
 }
-//29=len(reqs)
-
-
+std::vector<std::vector<int>> get_reqs(std::string filename){
+    std::vector<std::vector<int>> reqs;
+	std::fstream file;
+	char _tmpstr[200];
+	file.open(filename, std::ios::in);
+    int rql=0;
+	do{
+		file.getline(_tmpstr, 200);
+        std::string tmpstr(_tmpstr);
+        if(tmpstr.empty())break;
+        reqs.push_back(std::vector<int>());
+        int i=0;
+        std::string number="", steps="", method="";
+		int stl=tmpstr.length();
+        while(true){
+            if(tmpstr[i]!=' ')number+=tmpstr[i];
+            else{i++;break;}
+            i++;
+        }
+        while(true){
+            if(tmpstr[i]!=' ')method+=tmpstr[i];
+            else{i++;break;}
+            i++;
+        }
+        while(true){
+            if(i<stl)steps+=tmpstr[i];
+            else break;
+            i++;
+        }
+        reqs[rql].push_back(atoi(number.c_str()));
+        if(method=="f")reqs[rql].push_back(_f);
+        else if(method=="b")reqs[rql].push_back(b);
+        else if(method=="l")reqs[rql].push_back(_l);
+        else if(method=="r")reqs[rql].push_back(r);
+        else if(method=="fr")reqs[rql].push_back(fr);
+        else if(method=="br")reqs[rql].push_back(br);
+        else if(method=="bl")reqs[rql].push_back(bl);
+        else if(method=="fl")reqs[rql].push_back(fl);
+        reqs[rql].push_back(atoi(steps.c_str()));
+        rql++;
+	}while(!file.eof());
+    file.close();
+    return reqs;
+}
 int main(int argc, char *argv[]){
+    std::vector<std::vector<int>> reqs=get_reqs("requirements.txt");
 	for(int i=1, j=0;j<36;i++){
         if(i==4)continue;
         seat[j]=i;
@@ -402,7 +441,8 @@ int main(int argc, char *argv[]){
 		std::cout<<argv[0]<<" [number to find] [times to analyse]"<<std::endl;
 		exit(1);
 	}
-	for(int i=0;i<29;i++)order[i]=i;
+    int order[reqs.size()];
+    for(int i=0;i<reqs.size();i++)order[i]=i;
 	for(int _times=0;_times<final_time;_times++){
 		shuffle (seat,sizeof(seat)/sizeof(seat[0]));
 		for(int i=0;i<36;i++){
