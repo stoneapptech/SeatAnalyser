@@ -3,10 +3,12 @@ An mini project that helps deciding the best method to switch seats.
 So yeah, here's a simple explanation of that.
 
 # Environment
-Running this project requires the following packages installed with Python3:
+Running the Python3 version requires the following packages installed:
 1. Numpy
 2. Matplotlib
 
+Running the C++ version requires the following libary installed:
+1. boost
 # Method
 * Insert (inst)  
 ```
